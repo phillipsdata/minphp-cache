@@ -15,6 +15,7 @@ class CacheTest extends PHPUnit_Framework_TestCase
     {
         $this->cache_dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . "Fixtures" . DIRECTORY_SEPARATOR;
         $this->cache = new Cache($this->cache_dir);
+        chmod($this->cache_dir, 0777);
     }
 
     /**
