@@ -38,7 +38,7 @@ class Cache
      *
      * @param string $path The path within cache directory to empty
      */
-    public function emptyCache($path = null)
+    public function clear($path = null)
     {
         if (!($dir = @opendir($this->cache_dir . $path))) {
             return;
@@ -60,7 +60,7 @@ class Cache
      * @return boolean True if removed, false if no such file exists
      * @see Cache::cacheName
      */
-    public function clearCache($name, $path = null)
+    public function remove($name, $path = null)
     {
         $cache = $this->cacheName($name, $path);
         if (is_file($cache)) {
@@ -80,7 +80,7 @@ class Cache
      * @param string $path The path within cache directory to write the file to
      * @see Cache::cacheName
      */
-    public function writeCache($name, $output, $ttl, $path = null)
+    public function write($name, $output, $ttl, $path = null)
     {
         $cache = $this->cacheName($name, $path);
         
@@ -105,7 +105,7 @@ class Cache
      *  exists and has not yet expired, false otherwise.
      * @see Cache::cacheName
      */
-    public function fetchCache($name, $path = null)
+    public function fetch($name, $path = null)
     {
         $cache = $this->cacheName($name, $path);
         if (file_exists($cache) && filemtime($cache) > time()) {

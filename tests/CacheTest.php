@@ -14,8 +14,10 @@ class CacheTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->cache_dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . "Fixtures" . DIRECTORY_SEPARATOR;
+        if (!is_dir($this->cache_dir)) {
+            mkdir($this->cache_dir, 0777, true);
+        }
         $this->cache = new Cache($this->cache_dir);
-        chmod($this->cache_dir, 0777);
     }
 
     /**
@@ -24,93 +26,93 @@ class CacheTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        $this->cache->emptyCache();
+        $this->cache->clear();
     }
 
     /**
-     * @covers ::emptyCache
+     * @covers ::clear
      */
-    public function testEmptyCache()
+    public function testClear()
     {
-        file_put_contents($this->cache_dir . "testfile", "CacheTest::testEmptyCache");
+        file_put_contents($this->cache_dir . "testfile", "CacheTest::testClear");
         $this->assertFileExists($this->cache_dir . "testfile");
         
-        $this->cache->emptyCache("bad/sub/path/");
+        $this->cache->clear("bad/sub/path/");
         $this->assertFileExists($this->cache_dir . "testfile");
         
-        $this->cache->emptyCache();
+        $this->cache->clear();
         $this->assertFileNotExists($this->cache_dir . "testfile");
         
         mkdir($this->cache_dir . "sub/path", 0777, true);
         file_put_contents($this->cache_dir . "sub/path/testfile", "CacheTest::testEmptyCache");
         $this->assertFileExists($this->cache_dir . "sub/path/testfile");
-        $this->cache->emptyCache("sub/path/");
+        $this->cache->clear("sub/path/");
         $this->assertFileNotExists($this->cache_dir . "sub/path/testfile");
         rmdir($this->cache_dir . "sub/path");
         rmdir($this->cache_dir . "sub");
     }
 
     /**
-     * @covers ::clearCache
+     * @covers ::remove
      * @covers ::cacheName
-     * @uses \minphp\Cache\Cache::fetchCache
-     * @uses \minphp\Cache\Cache::writeCache
+     * @uses \minphp\Cache\Cache::fetch
+     * @uses \minphp\Cache\Cache::write
      */
-    public function testClearCache()
+    public function testRemove()
     {
         $cache_name = "testfile";
-        $cache_contents = "CacheTest::testClearCache";
-        $this->assertFalse($this->cache->clearCache("bad_file_name"));
+        $cache_contents = "CacheTest::testRemove";
+        $this->assertFalse($this->cache->remove("bad_file_name"));
         
-        $this->cache->writeCache($cache_name, $cache_contents, 10);
-        $this->assertEquals($cache_contents, $this->cache->fetchCache($cache_name));
+        $this->cache->write($cache_name, $cache_contents, 10);
+        $this->assertEquals($cache_contents, $this->cache->fetch($cache_name));
 
-        $this->assertTrue($this->cache->clearCache($cache_name));
+        $this->assertTrue($this->cache->remove($cache_name));
         
-        $this->assertFalse($this->cache->fetchCache($cache_name));
+        $this->assertFalse($this->cache->fetch($cache_name));
     }
 
     /**
-     * @covers ::writeCache
+     * @covers ::write
      * @covers ::cacheName
-     * @uses \minphp\Cache\Cache::fetchCache
-     * @uses \minphp\Cache\Cache::clearCache
+     * @uses \minphp\Cache\Cache::fetch
+     * @uses \minphp\Cache\Cache::remove
      */
     public function testWriteCache()
     {
         $cache_name = "testfile";
-        $cache_contents = "CacheTest::testWriteCache";
+        $cache_contents = "CacheTest::testWrite";
         
-        $this->cache->writeCache($cache_name, $cache_contents, -1);
-        $this->assertFalse($this->cache->fetchCache($cache_name));
+        $this->cache->write($cache_name, $cache_contents, -1);
+        $this->assertFalse($this->cache->fetch($cache_name));
         
-        $this->assertTrue($this->cache->clearCache($cache_name));
+        $this->assertTrue($this->cache->remove($cache_name));
         
-        $this->cache->writeCache($cache_name, $cache_contents, 1);
-        $this->assertEquals($cache_contents, $this->cache->fetchCache($cache_name));
+        $this->cache->write($cache_name, $cache_contents, 1);
+        $this->assertEquals($cache_contents, $this->cache->fetch($cache_name));
 
-        $this->assertTrue($this->cache->clearCache($cache_name));
+        $this->assertTrue($this->cache->remove($cache_name));
     }
 
     /**
-     * @covers ::fetchCache
+     * @covers ::fetch
      * @covers ::cacheName
-     * @uses \minphp\Cache\Cache::writeCache
-     * @uses \minphp\Cache\Cache::clearCache
+     * @uses \minphp\Cache\Cache::write
+     * @uses \minphp\Cache\Cache::remove
      */
     public function testFetchCache()
     {
         $cache_name = "testfile";
-        $cache_contents = "CacheTest::testFetchCache";
+        $cache_contents = "CacheTest::testFetch";
         
-        $this->cache->writeCache($cache_name, $cache_contents, -1);
-        $this->assertFalse($this->cache->fetchCache($cache_name));
+        $this->cache->write($cache_name, $cache_contents, -1);
+        $this->assertFalse($this->cache->fetch($cache_name));
         
-        $this->assertTrue($this->cache->clearCache($cache_name));
+        $this->assertTrue($this->cache->remove($cache_name));
         
-        $this->cache->writeCache($cache_name, $cache_contents, 1);
-        $this->assertEquals($cache_contents, $this->cache->fetchCache($cache_name));
+        $this->cache->write($cache_name, $cache_contents, 1);
+        $this->assertEquals($cache_contents, $this->cache->fetch($cache_name));
 
-        $this->assertTrue($this->cache->clearCache($cache_name));
+        $this->assertTrue($this->cache->remove($cache_name));
     }
 }
