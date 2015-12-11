@@ -19,6 +19,9 @@
         "satooshi/php-coveralls": "dev-master"
     },
     "autoload": {
-        "psr-4": {"minphp\\Cache\\": "src"}
+        "psr-4": {"Minphp\\Cache\\": "src"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Minphp\\Cache\\Tests\\": "tests"}
     }
 }

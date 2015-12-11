@@ -1,4 +1,4 @@
-# minphp/Cache
+# Minphp/Cache
 
 [![Build Status](https://travis-ci.org/phillipsdata/minphp-cache.svg?branch=master)](https://travis-ci.org/phillipsdata/minphp-cache)
 
@@ -9,7 +9,7 @@ Cache Library.
 Install via composer:
 
 ```sh
-composer require minphp/cache:dev-master
+composer require minphp/cache
 ```
 
 ## Basic Usage
