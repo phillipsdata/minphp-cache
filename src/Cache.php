@@ -1,5 +1,5 @@
 <?php
-namespace minphp\Cache;
+namespace Minphp\Cache;
 
 /**
  * Handles writing to and from the cache
@@ -18,7 +18,7 @@ class Cache
      * @var string The file extension for cache files
      */
     protected $cache_ext;
-    
+
     /**
      * Initialize the cache environment
      *
@@ -32,7 +32,7 @@ class Cache
         $this->cache_dir_perms = $cache_dir_perms;
         $this->cache_ext = $cache_ext;
     }
-    
+
     /**
      * Empties the entire cache of all files (directories excluded, not recursive)
      *
@@ -43,14 +43,14 @@ class Cache
         if (!($dir = @opendir($this->cache_dir . $path))) {
             return;
         }
-    
+
         while ($item = @readdir($dir)) {
             if (is_file($this->cache_dir . $path . $item)) {
                 @unlink($this->cache_dir . $path . $item);
             }
         }
     }
-    
+
     /**
      * Removes the given cache file from the cache
      *
@@ -69,7 +69,7 @@ class Cache
         }
         return false;
     }
-    
+
     /**
      * Writes the given data to the cache using the name given
      *
@@ -83,18 +83,18 @@ class Cache
     public function write($name, $output, $ttl, $path = null)
     {
         $cache = $this->cacheName($name, $path);
-        
+
         $cache_dir = dirname($cache);
         if (!file_exists($cache_dir)) {
             mkdir($cache_dir, $this->cache_dir_perms, true);
         }
-        
+
         // Save output to cache file
         file_put_contents($cache, $output);
         // Set the cache expiration date/time
         touch($cache, time()+$ttl);
     }
-    
+
     /**
      * Fetches the contents of a cache, if it exists and is valid
      *
@@ -114,7 +114,7 @@ class Cache
             return false;
         }
     }
-    
+
     /**
      * Builds the file name of the cache file based on the name given
      *
